@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{5D96AEAA-085E-B75E-7CD9-2CAF2B792347}</ProjectGuid>
+    <ProjectGuid>{2A6025E8-29DC-4DF0-7E4C-1BCE898DC913}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -59,6 +59,7 @@
     <Compile Include="Assets\Vectors.cs" />
     <Compile Include="Assets\Freya\Gizmosfs.cs" />
     <Compile Include="Assets\bezierPath.cs" />
+    <Compile Include="Assets\Mesh2D.cs" />
     <Compile Include="Assets\WorldToLocal.cs" />
     <Compile Include="Assets\bezierCurve.cs" />
     <Compile Include="Assets\TriggerScript.cs" />
@@ -68,7 +69,6 @@
     <Compile Include="Assets\Freya\Mathfs.cs" />
     <Compile Include="Assets\Freya\QuadRing.cs" />
     <Compile Include="Assets\Mesh\SimpleMesh.cs" />
-    <Compile Include="Assets\Mesh2D.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\WaveShader.shader" />
