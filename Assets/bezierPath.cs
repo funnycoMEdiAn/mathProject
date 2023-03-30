@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -53,10 +54,20 @@ public class bezierPath : MonoBehaviour
         for (int i = 0; i < road2D.vertices.Length; i++)
         {
             Vector3 roadPoint = road2D.vertices[i].point;
-            Gizmos.DrawSphere(tPos + rot*roadPoint, 0.2f);
+            Gizmos.DrawSphere(tPos + rot * roadPoint, 0.15f);
+
+            if (i > 0) // Draw a line to the previous point
+            {
+                Vector3 prevPoint = road2D.vertices[i - 1].point;
+                Gizmos.DrawLine(tPos + rot * prevPoint, tPos + rot * roadPoint);
+            }
+
+            if (i == road2D.vertices.Length - 1) // Connect last point to first point
+            {
+                Vector3 firstPoint = road2D.vertices[0].point;
+                Gizmos.DrawLine(tPos + rot * roadPoint, tPos + rot * firstPoint);
+            }
         }
-
-
         //Gizmos.DrawSphere(tPos + (rot * Vector3.right), 0.3f);
         //Gizmos.DrawSphere(tPos + (rot * Vector3.left), 0.3f);
         //Gizmos.DrawSphere(tPos + (rot * Vector3.up), 0.3f);
