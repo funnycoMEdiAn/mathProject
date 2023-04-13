@@ -33,14 +33,13 @@ public class bezierPath : MonoBehaviour
                                Color.magenta, default, 2f);
         }
 
-        //Last part of the path from last bezier point to the first bezier point
-        //Handles.DrawBezier(points[points.Length - 1].Anchor.position,
-        //                       points[0].Anchor.position,
-        //                       points[points.Length - 1].control1.position,
-        //                       points[0].control0.position,
-        //                       Color.magenta, default, 2f);
-
-
+            //Last part of the path from last bezier point to the first bezier point
+            //Handles.DrawBezier(points[points.Length - 1].Anchor.position,
+            //                   points[0].Anchor.position,
+            //                   points[points.Length - 1].control1.position,
+            //                   points[0].control0.position,
+            //                   Color.magenta, default, 2f);
+        
         // Get the point from bezier curve that corresponds our t-value
         Vector3 tPos = GetBezierPosition(TValue, points[0], points[1]);
         Vector3 tDir = GetBezierDirection(TValue, points[0], points[1]);
@@ -87,7 +86,7 @@ public class bezierPath : MonoBehaviour
                     Vector3 roadpointNext = road2D.vertices[i + 1].point;
 
                     Gizmos.DrawLine(tPos + rot * roadpoint, tPos + rot * roadpointNext);
-                }
+                } 
 
                 Vector3 pointLast = road2D.vertices[road2D.vertices.Length - 1].point;
                 Vector3 pointFirst = road2D.vertices[0].point;
