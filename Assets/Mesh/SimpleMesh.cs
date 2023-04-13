@@ -32,7 +32,7 @@ public class SimpleMesh : MonoBehaviour
         for (int i = 0; i < N; i++)
         {
             float theta = TAU * i / N;  // angle of current iteration (in radians)
-            Debug.Log("Angle: " + theta + ", which in deg is: " + 360f * theta / TAU);
+            //Debug.Log("Angle: " + theta + ", which in deg is: " + 360f * theta / TAU);
             Vector3 v = new Vector3(Mathf.Cos(theta),
                                     Mathf.Sin(theta),
                                     0);

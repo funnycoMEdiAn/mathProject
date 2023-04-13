@@ -49,61 +49,57 @@ public class bezierPath : MonoBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawSphere(tPos, 0.3f);
 
-        //Draw the direction at the position
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(tPos, tPos + 5.0f * tDir);
-
         //Try to get the roation
         Quaternion rot = Quaternion.LookRotation(tDir);
         Handles.PositionHandle(tPos, rot);
 
-        //Draw some points wrt t-position
-        for (int n = 0; n < Segments; n++)
+        for (int p = 0; p < points.Length; p++)
         {
-            float tTest = n / (float)Segments;
-            // Get the point from bezier curve that corresponds our t-value
-            tPos = GetBezierPosition(tTest, points[0], points[1]);
-            tDir = GetBezierDirection(tTest, points[0], points[1]);
-            rot = Quaternion.LookRotation(tDir);
 
-            float tTestNext = (n + 1) / (float)Segments;
-            // Get the point from bezier curve that corresponds our t-value
-            Vector3 tPosNext = GetBezierPosition(tTestNext, points[0], points[1]);
-            Vector3 tDirNext = GetBezierDirection(tTestNext, points[0], points[1]);
-            Quaternion rotNext = Quaternion.LookRotation(tDirNext);
-
-            for (int i = 0; i < road2D.vertices.Length; i++)
+            //Draw some points wrt t-position
+            for (int n = 0; n < Segments; n++)
             {
-                Vector3 roadpoint = road2D.vertices[i].point;
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(tPos + rot * roadpoint, 0.15f);
-                Gizmos.DrawSphere(tPosNext + rotNext * roadpoint, 0.15f);
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(tPos + rot * roadpoint, tPosNext + rotNext * roadpoint);
+                float tTest = n / (float)Segments;
+                // Get the point from bezier curve that corresponds our t-value
+                tPos = GetBezierPosition(tTest, points[p], points[p + 1]);
+                tDir = GetBezierDirection(tTest, points[p], points[p + 1]);
+                rot = Quaternion.LookRotation(tDir);
+
+                float tTestNext = (n + 1) / (float)Segments;
+                // Get the point from bezier curve that corresponds our t-value
+                Vector3 tPosNext = GetBezierPosition(tTestNext, points[p], points[p + 1]);
+                Vector3 tDirNext = GetBezierDirection(tTestNext, points[p], points[p + 1]);
+                Quaternion rotNext = Quaternion.LookRotation(tDirNext);
+
+                for (int i = 0; i < road2D.vertices.Length; i++)
+                {
+                    Vector3 roadpoint = road2D.vertices[i].point;
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawSphere(tPos + rot * roadpoint, 0.15f);
+                    Gizmos.DrawSphere(tPosNext + rotNext * roadpoint, 0.15f);
+                    Gizmos.color = Color.white;
+                    Gizmos.DrawLine(tPos + rot * roadpoint, tPosNext + rotNext * roadpoint);
+                }
+
+                for (int i = 0; i < road2D.vertices.Length - 1; i++)
+                {
+                    Vector3 roadpoint = road2D.vertices[i].point;
+                    Vector3 roadpointNext = road2D.vertices[i + 1].point;
+
+                    Gizmos.DrawLine(tPos + rot * roadpoint, tPos + rot * roadpointNext);
+                }
+
+                Vector3 pointLast = road2D.vertices[road2D.vertices.Length - 1].point;
+                Vector3 pointFirst = road2D.vertices[0].point;
+
+                Gizmos.DrawLine(tPos + rot * pointLast, tPos + rot * pointFirst);
+
             }
-
-            for (int i = 0; i < road2D.vertices.Length - 1; i++)
-            {
-                Vector3 roadpoint = road2D.vertices[i].point;
-                Vector3 roadpointNext = road2D.vertices[i + 1].point;
-
-                Gizmos.DrawLine(tPos + rot * roadpoint, tPos + rot * roadpointNext);
-            }
-            Vector3 pointLast = road2D.vertices[road2D.vertices.Length - 1].point;
-            Vector3 pointFirst = road2D.vertices[0].point;
-
-            Gizmos.DrawLine(tPos + rot * pointLast, tPos + rot * pointFirst);
 
         }
-
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.right), 0.3f);
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.left), 0.3f);
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.up), 0.3f);
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.up * 2.0f), 0.3f);
-
     }
 
-    private void Start()
+    void Start()
     {
         GenerateMesh();
         GetComponent<MeshFilter>().sharedMesh = mesh;
@@ -119,30 +115,28 @@ public class bezierPath : MonoBehaviour
         //Go through each segment
         for (int n = 0; n <= Segments; n++)
         {
-            // Compute the t-value for current segment
-            float t = n / (float)Segments;
+                // Compute the t-value for current segment
+                float t = n / (float)Segments;
+           
+                // Get the point from bezier curve that corresponds our t-value
+                Vector3 tPos = GetBezierPosition(t, points[0], points[1]);
+                Vector3 tDir = GetBezierDirection(t, points[0], points[1]);
+                Quaternion rot = Quaternion.LookRotation(tDir);
+            
+                //Loop through our road slice
+                for (int index = 0; index < road2D.vertices.Length; index++)
+                {
+                    //Local point
+                    Vector3 roadpoint = road2D.vertices[index].point;
+                    //Local to world-transform
+                    Vector3 worldpoint = tPos + rot * roadpoint;
+                    //Add this world point to our verts
+                    verts.Add(worldpoint);
+                    //Add the corresponding UV-coord - hack hack
+                    uvs.Add(new Vector2(roadpoint.x / 10.0f + 0.5f, 2 * t)); //t avulla voidaan säätää kuvan tiheyttä
 
-            // Get the point from bezier curve that corresponds our t-value
-            Vector3 tPos = GetBezierPosition(t, points[0], points[1]);
-            Vector3 tDir = GetBezierDirection(t, points[0], points[1]);
-            Quaternion rot = Quaternion.LookRotation(tDir);
-
-            //Loop through our road slice
-            for (int index = 0; index < road2D.vertices.Length; index++)
-            {
-                //Local point
-                Vector3 roadpoint = road2D.vertices[index].point;
-                //Local to world-transform
-                Vector3 worldpoint = tPos + rot * roadpoint;
-                //Add this world point to our verts
-                verts.Add(worldpoint);
-                //Add the corresponding UV-coord - hack hack
-                uvs.Add(new Vector2(roadpoint.x / 10.0f + 0.5f, 2 * t)); //t avulla voidaan säätää kuvan tiheyttä
-
-            }
-
+                }
         }
-
         // triangles //
 
         //How many lines
@@ -221,44 +215,4 @@ public class bezierPath : MonoBehaviour
 
         return (PtS - PtR).normalized;
     }
-
-
-    //Vanha koodi
-    /*
-    public bezierPoint BezierP1;
-    public bezierPoint BezierP2;
-    public bezierPoint BezierP3;
-    public bezierPoint BezierP4;
-
-    private void OnDrawGizmos()
-    {
-
-        Handles.DrawBezier(BezierP1.gameObject.transform.position, 
-                           BezierP2.gameObject.transform.position,
-                           BezierP1.control1.position,
-                           BezierP2.control0.position,
-                           Color.magenta, default, 1f);
-
-        Handles.DrawBezier(BezierP2.gameObject.transform.position,
-                           BezierP3.gameObject.transform.position,
-                           BezierP2.control1.position,
-                           BezierP3.control0.position,
-                           Color.magenta, default, 1f);
-
-        Handles.DrawBezier(BezierP3.gameObject.transform.position,
-                           BezierP4.gameObject.transform.position,
-                           BezierP3.control1.position,
-                           BezierP4.control0.position,
-                           Color.magenta, default, 1f);
-
-        Handles.DrawBezier(BezierP4.gameObject.transform.position,
-                           BezierP1.gameObject.transform.position,
-                           BezierP4.control1.position,
-                           BezierP1.control0.position,
-                           Color.magenta, default, 1f);
-
-
-
-    }
-    */
 }
