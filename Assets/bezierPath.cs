@@ -30,7 +30,7 @@ public class bezierPath : MonoBehaviour
 
     List<int> triangle_indices = new List<int>();  // List of tri_inds
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
 
         // Loop from beginning of array until the 2nd to last element (because i+1)
