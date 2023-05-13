@@ -30,6 +30,9 @@ public class bezierPath : MonoBehaviour
 
     List<int> triangle_indices = new List<int>();  // List of tri_inds
 
+    [SerializeField]
+    GameObject CarCube;
+
     private void OnDrawGizmos()
     {
 
@@ -51,21 +54,54 @@ public class bezierPath : MonoBehaviour
                            Color.magenta, default, 2f);
         */
 
+        float RoadLength = 0f;
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            RoadLength += Vector3.Distance(points[i].Anchor.position, points[i + 1].Anchor.position);
+        }
+
         // Get the point from bezier curve that corresponds our t-value
-        Vector3 tPos = GetBezierPosition(TValue, points[0], points[1]);
-        Vector3 tDir = GetBezierDirection(TValue, points[0], points[1]);
+        float distanceAlongPath = RoadLength * TValue;
+        int segmentIndex = 0;
+        float segmentStart = 0f;
+        float segmentLength = 0f;
+
+        // Find the segment that contains the distance along the path
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            segmentLength = Vector3.Distance(points[i].Anchor.position, points[i + 1].Anchor.position);
+            if (distanceAlongPath < segmentStart + segmentLength)
+            {
+                segmentIndex = i;
+                break;
+            }
+            segmentStart += segmentLength;
+        }
+
+        // Map the t-value to the range of the current segment
+        float t = Mathf.InverseLerp(segmentStart, segmentStart + segmentLength, distanceAlongPath);
+
+        Vector3 tPos = GetBezierPosition(t, points[segmentIndex], points[segmentIndex + 1]);
+        Vector3 tDir = GetBezierDirection(t, points[segmentIndex], points[segmentIndex + 1]);
+
+        // Get the point from bezier curve that corresponds our t-value
+        //Vector3 tPos = GetBezierPosition(TValue, points[0], points[1]);
+        //Vector3 tDir = GetBezierDirection(TValue, points[0], points[1]);
 
         // Draw the position on the curve
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(tPos, 0.25f);
 
-        // Draw the direction at the position
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(tPos, tPos+5.0f*tDir);
-
         // Try to get the rotation
         Quaternion rot = Quaternion.LookRotation(tDir);
         Handles.PositionHandle(tPos, rot);
+
+        if (CarCube != null)
+        {
+            CarCube.transform.position = tPos;
+            CarCube.transform.rotation = Quaternion.LookRotation(tDir * 2f);
+        }
 
         // Draws all parts of the Bezier path
         for (int i = 0; i < points.Length - 1; i++)
@@ -73,10 +109,11 @@ public class bezierPath : MonoBehaviour
             DrawBezierPart(points[i], points[i + 1]);
         }
 
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.right), 0.25f);  
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.left), 0.25f);  
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.up), 0.25f);  
-        //Gizmos.DrawSphere(tPos + (rot * Vector3.up*2.0f), 0.25f);  
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawSphere(tPos + (rot * Vector3.right), 0.25f);
+        //Gizmos.DrawSphere(tPos + (rot * Vector3.left), 0.25f);
+        //Gizmos.DrawSphere(tPos + (rot * Vector3.up), 0.25f);
+        //Gizmos.DrawSphere(tPos + (rot * Vector3.up * 2.0f), 0.25f);
     }
 
     private void DrawBezierPart(bezierPoint point0, bezierPoint point1)
@@ -105,7 +142,7 @@ public class bezierPath : MonoBehaviour
                 Gizmos.color = Color.blue;
                 Gizmos.DrawSphere(tPos + rot * roadpoint, 0.15f);
                 Gizmos.DrawSphere(tPosNext + rotNext * roadpoint, 0.15f);
-                Gizmos.color = Color.white;
+                Gizmos.color = Color.green;
                 // Draw lines from current to next vertex between slices
                 Gizmos.DrawLine(tPos + rot * roadpoint, tPosNext + rotNext * roadpoint);
 
