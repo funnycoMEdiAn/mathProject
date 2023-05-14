@@ -367,6 +367,7 @@
 "Assets/Mesh2D.cs"
 "Assets/PerlinNoise.cs"
 "Assets/TriggerScript.cs"
+"Assets/TriggerTest.cs"
 "Assets/Vectors.cs"
 "Assets/WorldToLocal.cs"
 -langversion:9.0

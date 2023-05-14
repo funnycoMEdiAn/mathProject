@@ -59,8 +59,10 @@
     <Compile Include="Assets\Vectors.cs" />
     <Compile Include="Assets\Freya\Gizmosfs.cs" />
     <Compile Include="Assets\bezierPath.cs" />
+    <Compile Include="Assets\GeneratePlane.cs" />
     <Compile Include="Assets\Mesh2D.cs" />
     <Compile Include="Assets\WorldToLocal.cs" />
+    <Compile Include="Assets\PerlinNoise.cs" />
     <Compile Include="Assets\bezierCurve.cs" />
     <Compile Include="Assets\TriggerScript.cs" />
     <Compile Include="Assets\LocalToWorld.cs" />
@@ -69,8 +71,7 @@
     <Compile Include="Assets\Freya\Mathfs.cs" />
     <Compile Include="Assets\Freya\QuadRing.cs" />
     <Compile Include="Assets\Mesh\SimpleMesh.cs" />
-    <Compile Include="Assets\GeneratePlane.cs" />
-    <Compile Include="Assets\PerlinNoise.cs" />
+    <Compile Include="Assets\TriggerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\WaveShader.shader" />
